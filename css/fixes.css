@@ -1,0 +1,176 @@
+/* =========================================================
+   MORROW — Critical fixes (images, search, wishlist, overlay)
+   ========================================================= */
+
+/* ---- Images always visible after load / error ---- */
+.im img {
+  opacity: 0;
+  transition: opacity .7s ease, transform 1.2s cubic-bezier(.2,.7,.2,1);
+}
+.im.ld img,
+.im.err img {
+  opacity: 1 !important;
+  animation: none;
+}
+/* Fallback: if onload never fires (cached / blocked CDN), show after short delay via JS class */
+.im.force img {
+  opacity: 1 !important;
+}
+
+/* Stay cards: primary image always visible; secondary only on hover */
+.scard-im .im:not(.im2) img {
+  opacity: 1; /* primary starts visible once parent has .ld */
+}
+.scard-im .im2 img {
+  opacity: 0;
+  transition: opacity .45s ease;
+}
+.scard:hover .im2 img {
+  opacity: 1;
+}
+.scard:hover .im:not(.im2) img {
+  transform: scale(1.05);
+}
+
+/* Hero & full-bleed images should never stay invisible */
+.hero .hbg img,
+.hhero .im img,
+.xhero .im img,
+.scene .im img,
+.cband .im img {
+  opacity: 1 !important;
+}
+
+/* ---- Search overlay ---- */
+#overlay.open {
+  display: block;
+}
+#overlay .sov {
+  position: relative;
+  z-index: 2;
+}
+/* Backdrop click area */
+#overlay .sov-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,.55);
+  z-index: 1;
+  cursor: pointer;
+}
+.sov {
+  z-index: 2;
+  position: relative;
+  margin: 0 auto;
+  max-width: 720px;
+  top: 0;
+}
+.sov-head {
+  position: relative;
+}
+.sov-close {
+  position: absolute;
+  right: 18px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 1px solid var(--line2);
+  color: var(--tx2);
+  transition: background .2s, color .2s;
+}
+.sov-close:hover {
+  background: rgba(236,229,213,.08);
+  color: var(--tx);
+}
+
+/* Ensure links inside search are clickable and close overlay */
+.sov-item {
+  text-decoration: none;
+  color: inherit;
+}
+.sov-item .im {
+  width: 56px;
+  height: 56px;
+  border-radius: 7px;
+  flex: none;
+  overflow: hidden;
+}
+.sov-item .im img {
+  opacity: 1 !important; /* tiny thumbs always visible */
+}
+
+/* ---- Wishlist & Set safety ---- */
+/* (logic fixed in JS) */
+
+/* ---- Overlay body lock safety ---- */
+body.overlay-open {
+  overflow: hidden;
+}
+
+/* ---- Mobile search / drawer polish ---- */
+@media (max-width: 860px) {
+  .sov {
+    max-height: 88vh;
+    border-radius: 0 0 14px 14px;
+  }
+}
+
+/* ---- Ensure map pins are interactive ---- */
+.poi {
+  cursor: pointer;
+  pointer-events: auto;
+}
+.poi-dot {
+  transition: r .2s ease;
+}
+.poi:hover .poi-dot,
+.poi:focus .poi-dot {
+  r: 9;
+}
+
+/* ---- Fix sticky book card on short viewports ---- */
+@media (max-height: 700px) {
+  .book-card {
+    position: static;
+  }
+}
+
+/* Search panel positioning under fixed nav */
+#overlay {
+  display: none;
+}
+#overlay.open {
+  display: block;
+}
+#overlay .sov-backdrop {
+  position: absolute;
+  inset: 0;
+  background: rgba(6,5,3,.7);
+  backdrop-filter: blur(4px);
+  z-index: 1;
+}
+#overlay .sov {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 2;
+  max-height: min(82vh, 720px);
+  background: var(--bg2);
+  border: 1px solid var(--line);
+  border-top: none;
+  border-radius: 0 0 18px 18px;
+  box-shadow: var(--sh);
+  display: flex;
+  flex-direction: column;
+  animation: dn .35s ease;
+}
+#overlay .sov-body {
+  overflow: auto;
+  flex: 1;
+  padding: 18px 28px 28px;
+}
